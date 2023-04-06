@@ -1,5 +1,6 @@
 import numpy as np
 import random 
+from matplotlib import pyplot as plt
 
 class BettingMarket: 
 
@@ -27,8 +28,21 @@ class BettingMarket:
         if self.msr == "LMSR":
             return self.cost_LMSR(self.beta)
         else: # want "LS_LMSR"
-            beta = self.alpha*sum(self.q)
-            return self.cost_LMSR(beta)
+            b = self.alpha*sum(self.q)
+            return self.cost_LMSR(b)
+    
+    def get_price(self, i):
+        if self.msr == "LMSR":
+            return np.exp(self.q[i]/self.beta)/np.sum(np.exp(np.array(self.q)/self.beta))
+        else:
+            b = self.alpha*sum(self.q)
+            sum_term = np.sum(np.exp(self.q/b))
+            term1 = self.alpha * np.log(sum_term)
+            term2_num = (np.sum(self.q)*np.exp(self.q[i]/b) - np.sum([x*np.exp(x/b) for x in self.q]))
+            term2_denom = np.sum(self.q)*sum_term
+            return term1 + term2_num/term2_denom
+                           
+
     
     def submit_bet(self, trader, delta, verbose=False):
         new_q = [sum(x) for x in zip(self.q, delta)]
@@ -61,26 +75,61 @@ class Trader:
         self.money = init_money
         self.payouts = [0]*n
 
+############
+# 1. Test against UNC paper initial market cost 
+# test_market = BettingMarket(2, [1000, 1000], "LSLMSR", 1, 1, [0.8, 0.2])
+# print(test_market.cost())
 
-t1 = Trader(id=1, n=2, init_money=1000)
-t2 = Trader(id=2, n=2, init_money=1000)
-b = BettingMarket(2, [100,100], "LMSR", None, 1, [0.8, 0.2])
 
-t1_LS = Trader(id=3, n=2, init_money=1000)
-t2_LS = Trader(id=4, n=2, init_money=1000)
-b_LS = BettingMarket(2, [100,100], "LSLMSR", 1, None, [0.8, 0.2])
+# ############
+# 2. Try out LMSR scoring rule
+# t1 = Trader(id=1, n=2, init_money=1000)
+# t2 = Trader(id=2, n=2, init_money=1000)
+# b = BettingMarket(2, [100,100], "LMSR", None, 1, [0.8, 0.2])
+# print(b.cost())
+# b.submit_bet(t2, [5,0], verbose=True)
+# b.submit_bet(t1, [5,0], verbose=True)
+# print(t1.money)
+# print(t2.money)
 
-###### 
-print(b.cost())
-b.submit_bet(t1, [5,0], verbose=True)
-b_LS.submit_bet(t1_LS, [5,0], verbose=True)
 
-b.submit_bet(t2, [5,0], verbose=True)
-b_LS.submit_bet(t2_LS, [5,0], verbose=True)
+############
+# 3. Try out LS-LMSR scoring rule
+# t1_LS = Trader(id=3, n=2, init_money=1000)
+# t2_LS = Trader(id=4, n=2, init_money=1000)
+# b_LS = BettingMarket(2, [100,100], "LSLMSR", 0.05, None, [0.8, 0.2])
+# b_LS.submit_bet(t1_LS, [5,0], verbose=True)
+# b_LS.submit_bet(t1_LS, [0,5], verbose=True)
+# b_LS.submit_bet(t2_LS, [5,0], verbose=True)
+# print(t1_LS.money)
+# print(t2_LS.money)
 
-print(t1.money)
-print(t2.money)
-print(t1_LS.money)
-print(t2_LS.money)
+############
+# 4. Try to replicate numerical analysis of CMU paper in terms of liquidity
+
+# CMU FIGURE 1
+bm_y250 = BettingMarket(2, [0, 250], "LSLMSR", alpha=0.05, beta=None, true_dist=[0.8, 0.2])
+bm_y500 = BettingMarket(2, [0, 500], "LSLMSR", alpha=0.05, beta=None, true_dist=[0.8, 0.2])
+bm_y750 = BettingMarket(2, [0, 750], "LSLMSR", alpha=0.05, beta=None, true_dist=[0.8, 0.2])
+bm = [bm_y250, bm_y500, bm_y750]
+
+x_vals = np.arange(0, 1000, 5)
+traders = [Trader(x, 2, 10000000000) for x in range(3)]
+prices = [[], [], []]
+
+for i in range(3):
+    for x in x_vals:
+        bm[i].submit_bet(traders[i], [x-bm[i].q[0], 0])
+        prices[i].append(bm[i].get_price(0))
+
+plt.plot(x_vals, prices[0], label='q_y = 250')
+plt.plot(x_vals, prices[1], label='q_y = 500')
+plt.plot(x_vals, prices[2], label='q_y= 750')
+
+plt.xlabel(r'$q_x$')
+plt.ylabel(r'$p_x(q)$')
+plt.title(r'Price variation as a function of complement quantity, $\alpha=0.05$')
+plt.savefig('cmu_fig1.png')
+plt.close()
 
 
