@@ -8,3 +8,7 @@ class Simulation:
 
     def __init__(self):
         self.market = BettingMarket(2, [1000, 1000])
+        self.betters = []
+    
+    def add_better(self, trader: Trader):
+        self.betters.append(trader)

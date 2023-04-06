@@ -17,7 +17,7 @@ import random
 # for i in range(3):
 #     for x in x_vals:
 #         bm[i].submit_bet(traders[i], [x-bm[i].q[0], 0])
-#         prices[i].append(bm[i].get_price(0))
+#         prices[i].append(bm[i].get_price(0, bm.q))
 
 # plt.plot(x_vals, prices[0], label='q_y = 250')
 # plt.plot(x_vals, prices[1], label='q_y = 500')

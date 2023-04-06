@@ -21,42 +21,43 @@ class BettingMarket:
         # self.revenue = -self.init_cost
         
 
-    def cost_LMSR(self, beta):
-        return beta*np.log(np.sum(np.exp(np.array(self.q)/beta)))
+    def cost_LMSR(self, beta, q):
+        return beta*np.log(np.sum(np.exp(np.array(q)/beta)))
 
     # TBD: function to calculate cost without updating state (re-modularize)
 
-    def cost(self):
+    def cost(self, q):
         if self.msr == "LMSR":
-            return self.cost_LMSR(self.beta)
+            return self.cost_LMSR(self.beta, q)
         else: # want "LS_LMSR"
-            b = self.alpha*np.sum(self.q)
-            return self.cost_LMSR(b)
+            b = self.alpha*np.sum(q)
+            return self.cost_LMSR(b, q)
     
-    def get_price(self, i):
+    def get_price(self, i, q):
         if self.msr == "LMSR":
-            return np.exp(self.q[i]/self.beta)/np.sum(np.exp(np.array(self.q)/self.beta))
+            return np.exp(q[i]/self.beta)/np.sum(np.exp(np.array(q)/self.beta))
         else: # "LS-LMSR"
-            b = self.alpha*sum(self.q)
-            sum_term = np.sum(np.exp(np.array(self.q)/b))
+            b = self.alpha*sum(q)
+            sum_term = np.sum(np.exp(np.array(q)/b))
             term1 = self.alpha * np.log(sum_term)
-            term2_num = (np.sum(self.q)*np.exp(self.q[i]/b) - np.sum([x*np.exp(x/b) for x in self.q]))
-            term2_denom = np.sum(self.q)*sum_term
+            term2_num = (np.sum(q)*np.exp(q[i]/b) - np.sum([x*np.exp(x/b) for x in q]))
+            term2_denom = np.sum(q)*sum_term
             return term1 + term2_num/term2_denom
 
-    # TBD: add way to compute cost without updating state 
     def submit_bet(self, trader, delta, verbose=False):
         new_q = [sum(x) for x in zip(self.q, delta)]
-        curr_cost = self.cost()
+        curr_cost = self.cost(self.q)
+        new_cost = self.cost(new_q)
+        if(new_cost-curr_cost > trader.money):
+            if verbose:
+                print("Insufficient trader funds: trader money={m}, transaction cost={c}".format(m=trader.money, c=new_cost-curr_cost))
+            return None
         self.q = new_q
-        new_cost = self.cost()
-        # TBD: add check that trader can afford the bet, else don't make it
         trader.money -= (new_cost-curr_cost)
         trader.payouts = [sum(x) for x in zip(trader.payouts, delta)]
 
         if verbose:
             print("Trader", trader.id, "updates to", self.q, "for cost of", (new_cost-curr_cost))
-        
         return new_cost - curr_cost
     
     def get_market_state(self):
