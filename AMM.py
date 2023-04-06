@@ -24,7 +24,7 @@ class BettingMarket:
     def cost_LMSR(self, beta, q):
         return beta*np.log(np.sum(np.exp(np.array(q)/beta)))
 
-    # TBD: function to calculate cost without updating state (re-modularize)
+    # TBD: DEAL WITH OVERFLOW IN EXP
 
     def cost(self, q):
         if self.msr == "LMSR":
@@ -62,7 +62,7 @@ class BettingMarket:
     
     def get_market_state(self):
         if self.outcome is None: # draw the outcome the first time this is called
-            self.outcome = random.choices(list(range(self.n)), weights=self.true_dist)
+            self.outcome = random.choices(list(range(self.n)), weights=self.true_dist)[0]
         
         revenue = self.cost(self.q)-self.init_cost-self.q[self.outcome]
         print("State:", self.q)

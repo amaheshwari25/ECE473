@@ -42,6 +42,8 @@ class Trader:
                 if bet_cost is not None: 
                     flag=True # logic: set flag to True if this went through, otherwise leave whatever was from first item
             MAX_ITER-=1
+        if(MAX_ITER < 0):
+            print("LOG: play() function hit MAX_ITER")
         
         final_cost = mkt.cost(mkt.q)
         if(verbose):
