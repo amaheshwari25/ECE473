@@ -1,4 +1,5 @@
-from AMM import Trader, BettingMarket
+from AMM import BettingMarket
+from BaseTrader import Trader
 import numpy as np
 from matplotlib import pyplot as plt
 import random
@@ -68,7 +69,7 @@ x_vals = np.arange(1, 1000)
 
 for alph in alphas:
     bm = BettingMarket(2, [1, 1], "LSLMSR", alpha=alph, beta=None, true_dist=[0.8, 0.2])
-    inf_trader = Trader(999, 2, 10000000000000)
+    inf_trader = BaseTrader(999, 2, 10000000000000)
     costs = []
     for x in x_vals:
         costs.append(bm.submit_bet(inf_trader, [1, 0]))
