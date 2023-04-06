@@ -39,9 +39,9 @@ t = Trader(id=1, n=2, init_money=100000)
 b = BettingMarket(2, [100,100], "LSLMSR", 0.05, None, [0.8, 0.2])
 t.set_belief([0.7, 0.3])
 FRAC = 0.002
-init_cost = b.cost()
+init_cost = b.cost(b.q)
 while(b.get_price(0, b.q) < t.belief[0]):
-    t.bet(b, 0, frac*b.q[0], True)
-final_cost = b.cost()
+    t.bet(b, 0, FRAC*b.q[0], True)
+final_cost = b.cost(b.q)
 print(final_cost-init_cost, t.belief[0]*t.payouts[0]) # (4.643657905161106 5.220465226863531)
 print(b.get_price(0, b.q), t.belief[0]) # (0.7040043888083869 0.7)

@@ -17,7 +17,7 @@ class BettingMarket:
 
         self.traders = []
         self.init_q = init_quant 
-        self.init_cost = self.cost()
+        self.init_cost = self.cost(self.q)
         # self.revenue = -self.init_cost
         
 
@@ -64,7 +64,7 @@ class BettingMarket:
         if self.outcome is None: # draw the outcome the first time this is called
             self.outcome = random.choices(list(range(self.n)), weights=self.true_dist)
         
-        revenue = self.cost()-self.init_cost-self.q[self.outcome]
+        revenue = self.cost(self.q)-self.init_cost-self.q[self.outcome]
         print("State:", self.q)
         print("Outcome realized:", self.outcome)
         print("Revenue:", revenue)
