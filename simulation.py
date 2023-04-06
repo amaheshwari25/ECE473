@@ -26,7 +26,7 @@ print('GROUND TRUTH:', true_belief)
 # 2. Establish 2 betting markets (LMSR, LS-LMSR)
 # using same parameters from CMU paper Figure 7: uses alpha = 0.03 for LS-LMSR, beta = 150.27, q0 = [100, 100]
 # b1 = BettingMarket(2, [100, 100], 'LMSR', None, 150.27, true_belief)
-b1 = BettingMarket(2, [100, 100], 'LMSR', None, 10, true_belief)
+b1 = BettingMarket(2, [100, 100], 'LMSR', None, 150.27, true_belief)
 b2 = BettingMarket(2, [100, 100], 'LSLMSR', 0.03, None, true_belief)
 
 s = Simulation([b1, b2])
