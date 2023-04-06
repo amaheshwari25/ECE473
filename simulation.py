@@ -39,7 +39,7 @@ traders_v2 = []
 bets_v2 = []
 costs_v2 = []
 
-STDEV = 0.3
+STDEV = 0
 for i in range(ntraders):
     # draw this trader's belief
     trad_p0 = min(max(np.random.normal(loc=p0, scale=STDEV), 0), 1)
@@ -49,7 +49,7 @@ for i in range(ntraders):
     traderv2 = Trader(i, 2, 10000000)
     traderv2.set_belief([trad_p0, 1-trad_p0])
 
-    bet1, cost1 = traderv1.play(b1)
+    bet1, cost1 = traderv1.play(b1, verbose=True)
     bets_v1.append(bet1)
     costs_v1.append(cost1)
     print("LMSR market trader", i, " bet:", bet1, "cost:", cost1)

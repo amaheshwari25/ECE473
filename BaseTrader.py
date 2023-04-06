@@ -29,19 +29,30 @@ class Trader:
         init_cost = mkt.cost(mkt.q)
         init_payouts = self.payouts
 
-        while(flag and MAX_ITER >= 0):
-            flag = False
-            # this is hard-coded for a 2-item market
-            if(mkt.get_price(0, mkt.q) < self.belief[0]):
-                flag=True
+        
+        if(mkt.get_price(0, mkt.q) < self.belief[0]):
+            while(MAX_ITER >= 0 and mkt.get_price(0, mkt.q) < self.belief[0]):
                 bet_cost = self.bet(mkt, 0, DELTA_FRAC*mkt.q[0])
-                if bet_cost is None: 
-                    flag=False
-            if(mkt.get_price(1, mkt.q) < self.belief[1]):
+                MAX_ITER-=1
+        elif(mkt.get_price(1, mkt.q) < self.belief[1]):   
+            while(MAX_ITER >= 0 and mkt.get_price(1, mkt.q) < self.belief[1]):
                 bet_cost = self.bet(mkt, 1, DELTA_FRAC*mkt.q[1])
-                if bet_cost is not None: 
-                    flag=True # logic: set flag to True if this went through, otherwise leave whatever was from first item
-            MAX_ITER-=1
+                MAX_ITER-=1
+
+        # while(flag and MAX_ITER >= 0):
+        #     flag = False
+        #     # this is hard-coded for a 2-item market
+        #     if(mkt.get_price(0, mkt.q) < self.belief[0]):
+        #         flag=True
+        #         bet_cost = self.bet(mkt, 0, DELTA_FRAC*mkt.q[0])
+        #         if bet_cost is None: 
+        #             flag=False
+        #     elif(mkt.get_price(1, mkt.q) < self.belief[1]):
+        #         bet_cost = self.bet(mkt, 1, DELTA_FRAC*mkt.q[1])
+        #         if bet_cost is not None: 
+        #             flag=True # logic: set flag to True if this went through, otherwise leave whatever was from first item
+        #     MAX_ITER-=1
+        
         if(MAX_ITER < 0):
             print("LOG: play() function hit MAX_ITER")
         
