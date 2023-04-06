@@ -26,7 +26,7 @@ class Trader:
         '''
         # Q: could this infinite loop? do we really need MAX_ITER or not? 
         flag=True
-        init_cost = mkt.cost()
+        init_cost = mkt.cost(mkt.q)
         init_payouts = self.payouts
 
         while(flag and MAX_ITER >= 0):
@@ -43,7 +43,7 @@ class Trader:
                     flag=True # logic: set flag to True if this went through, otherwise leave whatever was from first item
             MAX_ITER-=1
         
-        final_cost = mkt.cost()
+        final_cost = mkt.cost(mkt.q)
         if(verbose):
             print("Cost of transaction", final_cost-init_cost)
             print("Expected return from transaction", sum(self.belief[i]*self.payouts[i] for i in range(self.n)))
