@@ -38,10 +38,9 @@ class Trader:
                 if bet_cost is None: 
                     flag=False
             if(mkt.get_price(1, mkt.q) < self.belief[1]):
-                flag=True
                 bet_cost = self.bet(mkt, 1, DELTA_FRAC*mkt.q[1])
-                if bet_cost is None: 
-                    flag=False
+                if bet_cost is not None: 
+                    flag=True # logic: set flag to True if this went through, otherwise leave whatever was from first item
             MAX_ITER-=1
         
         final_cost = mkt.cost()
