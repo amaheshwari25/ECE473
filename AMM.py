@@ -35,6 +35,10 @@ class BettingMarket:
     
     def get_price_vector(self, q):
         return [self.get_price(i, q) for i in range(len(q))]
+
+    def get_price_prob(self, q):
+        price_vec = self.get_price_vector(q)
+        return np.array(price_vec)/np.sum(price_vec)
     
     def get_price(self, i, q):
         if self.msr == "LMSR":
@@ -67,6 +71,10 @@ class BettingMarket:
         # LOSS / REVENUE FUNCTION: current definition is C(q)-C(q0)-z_i, where z_i is the PAYOUT for the outcome i (not total quantity_i)
         return self.cost(self.q)-self.init_cost-(self.q[outcome]-self.init_q[outcome])
         # return self.cost(self.q)-self.init_cost-self.q[outcome]
+    
+    def get_expected_revenue(self):
+        revs = [self.get_revenue(i) for i in range(len(q))]
+        return np.dot(self.get_price_prob(), np.array(revs))
     
     def get_market_state(self, silence=False):
         if self.outcome is None: # draw the outcome the first time this is called
