@@ -91,7 +91,7 @@ class Simulation:
         return (b1.get_price_vector(b1.q), b2.get_price_vector(b2.q), b1.get_revenue(b1.outcome), b2.get_revenue(b2.outcome)) # change this to same outcome?
     
 
-    def noisyinfo_sim(self, ntraders, trader_money, markets, priv_info_noise=0.2, p_signal=0.5, silence=False, verbose=True):
+    def noisyinfo_sim(self, ntraders, trader_money, markets, priv_info_noise=0.2, p_signal_low=0.5, p_signal_high=0.5, silence=False, verbose=True):
         '''
         Parameters:
          - priv_info_noise: private info will be uniform in [ground_truth-priv_info_noise, ground_truth+priv_info_noise]
@@ -133,6 +133,7 @@ class Simulation:
             trad_b1_p0 = priv_info
             trad_b2_p0 = priv_info
             # 2. with p_signal probability, update to be between this and current market value price-probability 
+            p_signal = (i/ntraders-1)*(p_signal_high-p_signal_low) + p_signal_low
             if(random.random() <= p_signal):
                 trad_b1_p0 += min(0.999, max(0.001, random.random()*(b1.get_price_prob(b1.q)[0]-priv_info)))
                 trad_b2_p0 += min(0.999, max(0.001, random.random()*(b2.get_price_prob(b2.q)[0]-priv_info)))

@@ -21,12 +21,12 @@ import random
 
 
 # 2. Run noisy information simulation: indep variable =  alpha 
-vigs = np.arange(0.02, 0.2, 0.01)
+vigs = np.arange(0.02, 0.4, 0.01)
 alphas = vigs/(2*np.log(2))
 
 init_quant = [100, 100]
-N_TRIALS = 50
-N_TRADERS = 10
+N_TRIALS = 40
+N_TRADERS = 20
 
 acc_LS = []
 acc_LMSR = []
@@ -61,7 +61,7 @@ for alpha in alphas:
         #### 
         markets = s.create_market_comp([100, 100], 'LMSR', 'LSLMSR', b, alpha, ground_truth)
         b1, b2 = markets[0], markets[1]
-        b1_prob, b2_prob, b1_exprev, b2_exprev = s.noisyinfo_sim(10, 10000000, markets, silence=True, verbose=False)
+        b1_prob, b2_prob, b1_exprev, b2_exprev = s.noisyinfo_sim(10, 10000000, markets, p_signal_low=0.2, p_signal_high=1, silence=True, verbose=False)
 
         acc_LS_temp.append(1-abs(b2_prob[0]-ground_truth[0]))
         acc_LMSR_temp.append(1-abs(b1_prob[0]-ground_truth[0]))
@@ -96,22 +96,23 @@ for alpha in alphas:
 # plt.show()
 
 # ACCURACY vs ALPHA 
-# plt.plot(alphas, acc_LS, marker='o',label='LS_LMSR')
-# plt.plot(alphas, acc_LMSR, marker='o', label='LMSR')
-# plt.xlabel(r'$\alpha$')
-# plt.ylabel(r'Final market prediction accuracy')
-# plt.title(r'Market accuracy vs. $\alpha$ (N=10 traders in noise model)')
-# plt.legend()
+plt.plot(alphas, acc_LS, marker='o',label='LS_LMSR')
+plt.plot(alphas, acc_LMSR, marker='o', label='LMSR')
+plt.xlabel(r'$\alpha$')
+plt.ylabel(r'Final market prediction accuracy')
+plt.title(r'Market accuracy vs. $\alpha$ (N=10 traders in noise model)')
+plt.legend()
 # plt.savefig('figs/noise_accuracyvsalpha.png')
 # plt.close()
+plt.show()
 
 # EXP REV vs ACCURACY
 # plt.plot(acc_LS, wcls, marker='o',markersize=5, label='worst-case-losses')
-plt.errorbar(acc_LMSR, exprev_LMSR, yerr=exprev_stdevs_LMSR, marker='o',markersize=5, label='LMSR')
-plt.errorbar(acc_LS, exprev_LS, yerr=exprev_stdevs_LS, marker='o',markersize=5, label='LS_LMSR')
-plt.ylabel('Expected MM revenue')
-plt.title(r'Expected revenue vs. price accuracy (N=10 traders in noise model)')
-plt.xlabel(r'Price accuracy')
-plt.legend()
-plt.savefig('figs/noise_exprev_accuracy.png')
-plt.show()
+# plt.errorbar(acc_LMSR, exprev_LMSR, yerr=exprev_stdevs_LMSR, marker='o',markersize=5, label='LMSR')
+# plt.errorbar(acc_LS, exprev_LS, yerr=exprev_stdevs_LS, marker='o',markersize=5, label='LS_LMSR')
+# plt.ylabel('Expected MM revenue')
+# plt.title(r'Expected revenue vs. price accuracy (N=10 traders in noise model)')
+# plt.xlabel(r'Price accuracy')
+# plt.legend()
+# plt.savefig('figs/noise_exprev_accuracy.png')
+# plt.show()
