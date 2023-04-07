@@ -21,6 +21,21 @@ class Simulation:
         b2 = BettingMarket(2, init_quant, msr2, (None if msr2 == "LMSR" else msr2_const), (None if msr2 == "LS-LMSR" else msr2_const), ground_truth)
         return [b1, b2]
 
+    def compute_b(self, alpha, init_quant):
+        lslmsr =  BettingMarket(2, init_quant, "LSLMSR", alpha, None, [-1, -1])
+        worst_case_loss = lslmsr.init_cost # worst-case LS-LMSR loss is just C(q0)
+        # worst-case LMSR loss is -b ln (exp(q0_i /b) / sum(exp(q0_j / b))), where q0_i is the max value in init_quant
+        #   (this formula reduces to b ln(n) for uniform initial distribution; TBD: check that correct for general case)
+        uniform_flag = True
+        for x in init_quant:
+            if not x == init_quant[0]:
+                uniform_flag = False
+                break
+        assert(uniform_flag)
+        b = worst_case_loss / np.log(2)
+        return b, worst_case_loss
+
+
     def perfect_trader_sim(self, ntraders, trader_money, markets, verbose=False):
         print()
         print()
