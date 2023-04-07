@@ -60,15 +60,18 @@ class BettingMarket:
             print("Trader", trader.id, "updates to", self.q, "for cost of", (new_cost-curr_cost))
         return new_cost - curr_cost
     
-    def get_market_state(self):
+    def get_market_state(self, verbose=False):
         if self.outcome is None: # draw the outcome the first time this is called
             self.outcome = random.choices(list(range(self.n)), weights=self.true_dist)[0]
+            # self.outcome = 0
         
         revenue = self.cost(self.q)-self.init_cost-self.q[self.outcome]
-        print("State:", self.q)
-        print("Final instantaneous prices:", [self.get_price(0, self.q), self.get_price(1, self.q)])
-        print("Outcome realized:", self.outcome)
-        print("Revenue:", revenue)
+        if (verbose):
+            print("State:", self.q)
+            print("Final instantaneous prices:", [self.get_price(0, self.q), self.get_price(1, self.q)])
+            print("Outcome realized:", self.outcome)
+            print("Revenue:", revenue)
+        return revenue, [self.get_price(0, self.q), self.get_price(1, self.q)], self.outcome
 
     
     # TBD: IMPLEMENT "MOVE FORWARD IN OBLIGATION SPACE" requirement

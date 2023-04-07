@@ -8,9 +8,17 @@ class Simulation:
 
     def __init__(self):
         self.betters = []
+        self.traders_LMSR = []
+        self.traders_LSLMSR = []
     
     # def add_better(self, trader: Trader):
     #     self.betters.append(trader)
+
+    def getLMSRtraders(self):
+        return self.traders_LMSR
+
+    def getLSLMSRtraders(self):
+        return self.traders_LSLMSR
 
     def draw_unif_ground_truth(self, low, high):
         p0 = low+(high-low)*random.random()
@@ -21,15 +29,17 @@ class Simulation:
         b2 = BettingMarket(2, init_quant, msr2, (None if msr2 == "LMSR" else msr2_const), (None if msr2 == "LS-LMSR" else msr2_const), ground_truth)
         return [b1, b2]
 
-    def perfect_trader_sim(self, ntraders, trader_money, markets, verbose=False):
-        print()
-        print()
+    def perfect_trader_sim(self, ntraders, trader_money, markets, trader_beliefs, verbose=False):
+        if (verbose):
+            print()
+            print()
         b1, b2 = markets[0], markets[1]
         assert(b1.true_dist == b2.true_dist)
-        print('GROUND TRUTH:', b1.true_dist)
-        print('INITIAL PRICE: LMSR', [b1.get_price(0, b1.q), b1.get_price(1, b1.q)])
-        print('INITIAL PRICE: LS-LMSR', [b2.get_price(0, b2.q), b2.get_price(1, b2.q)])
-        print()
+        if (verbose):
+            print('GROUND TRUTH:', b1.true_dist)
+            print('INITIAL PRICE: LMSR', [b1.get_price(0, b1.q), b1.get_price(1, b1.q)])
+            print('INITIAL PRICE: LS-LMSR', [b2.get_price(0, b2.q), b2.get_price(1, b2.q)])
+            print()
 
         traders_b1 = []
         bets_b1 = []
@@ -40,31 +50,41 @@ class Simulation:
 
         for i in range(ntraders):
             traderv1 = Trader(i, 2, trader_money)
-            traderv1.set_belief(b1.true_dist)
-            traders_b1.append(traderv1)
+            self.traders_LMSR.append(traderv1)
+            # traderv1.set_belief(b1.true_dist)
+            traderv1.set_belief(trader_beliefs[i])
+            traders_b1.append(traderv1) # for plotting 
             traderv2 = Trader(i, 2, trader_money)
-            traderv2.set_belief(b1.true_dist)
+            self.traders_LSLMSR.append(traderv2) # for plotting
+            # traderv2.set_belief(b1.true_dist) 
+            traderv2.set_belief(trader_beliefs[i])
             traders_b2.append(traderv2)
 
-            print("LMSR market trader", i, ":")
+            if (verbose):
+                print("LMSR market trader", i, ":")
             bet1, cost1 = traderv1.play(b1, verbose=verbose)
             bets_b1.append(bet1)
             costs_b1.append(cost1)
-            print("Final: bet:", bet1, "cost:", cost1)
-            print('------')
-
-            print("LS-LMSR market trader", i, ":")
+            if (verbose):
+                print("Final: bet:", bet1, "cost:", cost1)
+                print('------')
+            if (verbose):
+                print("LS-LMSR market trader", i, ":")
             bet2, cost2 = traderv2.play(b2, verbose=verbose)
             bets_b2.append(bet2)
             costs_b2.append(cost2)
-            print("Final: bet:", bet2, "cost:", cost2)
+            if (verbose):
+                print("Final: bet:", bet2, "cost:", cost2)
+                print()
+        if (verbose):    
+            print('==========')
+            print('LMSR market: ')
+        r1, p1, o1 = b1.get_market_state(True)
+        if (verbose):    
             print()
-        print('==========')
-        print('LMSR market: ')
-        b1.get_market_state()
-        print()
-        print('LS-LMSR market')
-        b2.get_market_state()
+            print('LS-LMSR market')
+        r2, p2, o2 = b2.get_market_state(True)
+        return r1, p1, o1, r2, p2, o2
     
 
 
