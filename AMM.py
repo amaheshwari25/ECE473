@@ -73,8 +73,8 @@ class BettingMarket:
         # return self.cost(self.q)-self.init_cost-self.q[outcome]
     
     def get_expected_revenue(self):
-        revs = [self.get_revenue(i) for i in range(len(q))]
-        return np.dot(self.get_price_prob(), np.array(revs))
+        revs = [self.get_revenue(i) for i in range(len(self.q))]
+        return np.dot(self.get_price_prob(self.q), np.array(revs))
     
     def get_market_state(self, silence=False):
         if self.outcome is None: # draw the outcome the first time this is called
