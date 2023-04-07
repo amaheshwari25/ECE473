@@ -66,6 +66,7 @@ class BettingMarket:
         
         revenue = self.cost(self.q)-self.init_cost-self.q[self.outcome]
         print("State:", self.q)
+        print("Final instantaneous prices:", [self.get_price(0, self.q), self.get_price(1, self.q)])
         print("Outcome realized:", self.outcome)
         print("Revenue:", revenue)
 
