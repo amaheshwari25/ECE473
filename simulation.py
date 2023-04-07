@@ -129,13 +129,13 @@ class Simulation:
 
             # MAIN: Set this trader's belief
             # 1. some private info distributed noisily around ground truth (want this to be pretty noisy?)
-            priv_info = random.random()*(2*priv_info_noise)+(b1.true_dist[0]-priv_info_noise)
+            priv_info = min(random.random()*(2*priv_info_noise)+max(b1.true_dist[0]-priv_info_noise, 0.001), 0.999)
             trad_b1_p0 = priv_info
             trad_b2_p0 = priv_info
             # 2. with p_signal probability, update to be between this and current market value price-probability 
             if(random.random() <= p_signal):
-                trad_b1_p0 += random.random()*(b1.get_price_prob(b1.q)[0]-priv_info)
-                trad_b2_p0 += random.random()*(b2.get_price_prob(b2.q)[0]-priv_info)
+                trad_b1_p0 += min(0.999, max(0.001, random.random()*(b1.get_price_prob(b1.q)[0]-priv_info)))
+                trad_b2_p0 += min(0.999, max(0.001, random.random()*(b2.get_price_prob(b2.q)[0]-priv_info)))
             
             traderv1.set_belief([trad_b1_p0, 1-trad_b1_p0])
             traderv2.set_belief([trad_b2_p0, 1-trad_b2_p0])
@@ -165,7 +165,7 @@ class Simulation:
             print('LS-LMSR market')
         b2.get_market_state(silence=silence)
 
-        return (b1.get_price_vector(b1.q), b2.get_price_vector(b2.q), b1.get_expected_revenue(), b2.get_expected_revenue())
+        return (b1.get_price_prob(b1.q), b2.get_price_prob(b2.q), b1.get_expected_revenue(), b2.get_expected_revenue())
 
 
 
