@@ -33,6 +33,9 @@ class BettingMarket:
             b = self.alpha*np.sum(q)
             return self.cost_LMSR(b, q)
     
+    def get_price_vector(self, q):
+        return [self.get_price(i, q) for i in range(len(q))]
+    
     def get_price(self, i, q):
         if self.msr == "LMSR":
             return np.exp(q[i]/self.beta)/np.sum(np.exp(np.array(q)/self.beta))
@@ -60,15 +63,21 @@ class BettingMarket:
             print("Trader", trader.id, "updates to", self.q, "for cost of", (new_cost-curr_cost))
         return new_cost - curr_cost
     
-    def get_market_state(self):
+    def get_revenue(self, outcome):
+        # LOSS / REVENUE FUNCTION: current definition is C(q)-C(q0)-z_i, where z_i is the PAYOUT for the outcome i (not total quantity_i)
+        return self.cost(self.q)-self.init_cost-(self.q[outcome]-self.init_q[outcome])
+        # return self.cost(self.q)-self.init_cost-self.q[outcome]
+    
+    def get_market_state(self, silence=False):
         if self.outcome is None: # draw the outcome the first time this is called
             self.outcome = random.choices(list(range(self.n)), weights=self.true_dist)[0]
         
-        revenue = self.cost(self.q)-self.init_cost-self.q[self.outcome]
-        print("State:", self.q)
-        print("Final instantaneous prices:", [self.get_price(0, self.q), self.get_price(1, self.q)])
-        print("Outcome realized:", self.outcome)
-        print("Revenue:", revenue)
+        revenue = self.get_revenue(self.outcome)
+        if not silence:
+            print("State:", self.q)
+            print("Final instantaneous prices:", [self.get_price(0, self.q), self.get_price(1, self.q)])
+            print("Outcome realized:", self.outcome)
+            print("Revenue:", revenue)
 
     
     # TBD: IMPLEMENT "MOVE FORWARD IN OBLIGATION SPACE" requirement
