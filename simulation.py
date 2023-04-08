@@ -8,9 +8,17 @@ class Simulation:
 
     def __init__(self):
         self.betters = []
+        self.traders_LMSR = []
+        self.traders_LSLMSR = []
     
     # def add_better(self, trader: Trader):
     #     self.betters.append(trader)
+
+    def getLMSRtraders(self):
+        return self.traders_LMSR
+
+    def getLSLMSRtraders(self):
+        return self.traders_LSLMSR
 
     def draw_unif_ground_truth(self, low, high):
         p0 = low+(high-low)*random.random()
@@ -166,7 +174,7 @@ class Simulation:
             print('LS-LMSR market')
         b2.get_market_state(silence=silence)
 
-        return (b1.get_price_prob(b1.q), b2.get_price_prob(b2.q), b1.get_expected_revenue(), b2.get_expected_revenue())
+        return (b1.get_price_prob(b1.q), b2.get_price_prob(b2.q), b1.get_expected_revenue(), b2.get_expected_revenue(), b1.get_revenue(b1.outcome), b2.get_revenue(b2.outcome), b1.outcome, b2.outcome)
 
 
 
