@@ -3,6 +3,26 @@ import random
 from matplotlib import pyplot as plt
 from BaseTrader import Trader
 from AMM import BettingMarket
+from simulation import Simulation
+
+
+######### misc_test 
+
+b2 = BettingMarket(2, [100, 100], "LSLMSR", 0.03, None, [0.5, 0.5])
+print(b2.get_price_vector(b2.q))
+t1 = Trader(id=1, n=2, init_money=1000)
+b2.submit_bet(t1, [5, 0], verbose=True)
+print(b2.get_price_vector(b2.q))
+
+# s = Simulation()
+# alphas = np.linspace(0.01, 0.2, 0.01)
+# print(s.compute_b(0.03, [100, 100]))
+# b1 = BettingMarket(2, [100, 100], "LMSR", None, 150.27, [0.5, 0.5])
+# b2 = BettingMarket(2, [100, 100], "LSLMSR", 0.03, None, [0.5, 0.5])
+# print(b1.init_cost, b2.init_cost)
+
+
+
 
 ############
 # 1. Test against UNC paper initial market cost 
@@ -35,13 +55,13 @@ from AMM import BettingMarket
 
 #############
 # 4. Testing how price varies while slowly increasing quantity 
-t = Trader(id=1, n=2, init_money=100000)
-b = BettingMarket(2, [100,100], "LSLMSR", 0.05, None, [0.8, 0.2])
-t.set_belief([0.7, 0.3])
-FRAC = 0.002
-init_cost = b.cost(b.q)
-while(b.get_price(0, b.q) < t.belief[0]):
-    t.bet(b, 0, FRAC*b.q[0], True)
-final_cost = b.cost(b.q)
-print(final_cost-init_cost, t.belief[0]*t.payouts[0]) # (4.643657905161106 5.220465226863531)
-print(b.get_price(0, b.q), t.belief[0]) # (0.7040043888083869 0.7)
+# t = Trader(id=1, n=2, init_money=100000)
+# b = BettingMarket(2, [100,100], "LSLMSR", 0.05, None, [0.8, 0.2])
+# t.set_belief([0.7, 0.3])
+# FRAC = 0.002
+# init_cost = b.cost(b.q)
+# while(b.get_price(0, b.q) < t.belief[0]):
+#     t.bet(b, 0, FRAC*b.q[0], True)
+# final_cost = b.cost(b.q)
+# print(final_cost-init_cost, t.belief[0]*t.payouts[0]) # (4.643657905161106 5.220465226863531)
+# print(b.get_price(0, b.q), t.belief[0]) # (0.7040043888083869 0.7)

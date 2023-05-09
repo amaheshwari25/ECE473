@@ -89,7 +89,6 @@ class Simulation:
 
         return (b1.get_price_vector(b1.q), b2.get_price_vector(b2.q), b1.get_revenue(b1.outcome), b2.get_revenue(b2.outcome)) # change this to same outcome?
     
-
     def noisyinfo_sim(self, ntraders, trader_money, markets, priv_info_noise=0.2, p_signal_low=0.5, p_signal_high=0.5, silence=False, verbose=False):
         '''
         Parameters:
@@ -169,7 +168,7 @@ class Simulation:
 
         return (b1.get_price_prob(b1.q), b2.get_price_prob(b2.q), b1.get_expected_revenue(), b2.get_expected_revenue())
 
-    def simple_noise_sim(self, ntraders, trader_money, markets, priv_info_noise=0.2, look_back = 50, k=0.5, silence=False, verbose=False):
+    def simple_noise_sim(self, ntraders, trader_money, markets, priv_info_noise=0.2, look_back = 50, k=0.5, k_min=None, k_max=None, silence=False, verbose=False):
         '''
         Idea: at each time instant (for each trader), 
           (1) draw some (noisy) private info
@@ -179,7 +178,7 @@ class Simulation:
          - priv_info_noise: private info will be uniform in [ground_truth-priv_info_noise, ground_truth+priv_info_noise]
              (Note: for intended simulation, this should be pretty noisy!)
          - look_back: number of previous market price beliefs to consider 
-         - k: weight for weighted average belief
+         - k: weight for weighted average belief (OR: k_min --> k_max)
         '''
         b1, b2 = markets[0], markets[1]
         assert(b1.true_dist == b2.true_dist)
@@ -218,7 +217,11 @@ class Simulation:
             trad_b1_p0, trad_b2_p0 = priv_info, priv_info
             # 2. compute average of look_back previous market values
             b1avg, b2avg  = np.mean(prev_b1market_p0[-1*min(look_back, i+1):]), np.mean(prev_b2market_p0[-1*min(look_back, i+1):])
-            # 3. weight previous market prob values with private info
+            # 3. weight previous market prob values with private info based on k: k*(MY INFO)+(1-k)*(MARKET AVG)
+            #      with possibility for using a k linearly varying from **k_max to k_min** (NOTE DIRECTION!) across ntraders
+            #       e.g. 1st trader uses k=k_max=0.8 (rely on private info), final trader uses k=k_min=0.2 (rely on market avg)
+            k = ((k_max+(k_min-k_max)*(i+1)/ntraders) if k_min is not None else k)
+            # note: variable k does NOT seem to work great for increasing accuracy trend -- does lead to BETTER MM revenue? somehow?
             trad_b1_p0 = k*trad_b1_p0 + (1-k)*b1avg
             trad_b2_p0 = k*trad_b2_p0 + (1-k)*b2avg 
 
@@ -250,95 +253,3 @@ class Simulation:
         b2.get_market_state(silence=silence)
 
         return (b1.get_price_prob(b1.q), b2.get_price_prob(b2.q), b1.get_expected_revenue(), b2.get_expected_revenue())
-
-
-
-
-
-
-
-
-
-
-
-# TBD: more strategic simulation
-#   - update the quantities to get to a reasonable "level" first so 1 trader does not extract all value? or fine for 1 trader to extract all?
-#   - make belief a function of current state + noisy signal (counteracts possible max value extraction from first player): weighted
-
-# print()
-# print()
-# # 1. Draw ground truth uniformly from [0.3, 0.7] 
-# p0 = 0.4*random.random()+0.3
-# true_belief = [p0, 1-p0]
-# print('GROUND TRUTH:', true_belief)
-
-# # 2. Establish 2 betting markets (LMSR, LS-LMSR)
-# # using same parameters from CMU paper Figure 7: uses alpha = 0.03 for LS-LMSR, beta = 150.27, q0 = [100, 100]
-# # b1 = BettingMarket(2, [100, 100], 'LMSR', None, 150.27, true_belief)
-# b1 = BettingMarket(2, [100, 100], 'LMSR', None, 150.27, true_belief)
-# b2 = BettingMarket(2, [100, 100], 'LSLMSR', 0.03, None, true_belief)
-# print('INITIAL PRICE: LMSR', [b1.get_price(0, b1.q), b1.get_price(1, b1.q)])
-# print('INITIAL PRICE: LS-LMSR', [b2.get_price(0, b2.q), b2.get_price(1, b2.q)])
-# print()
-
-
-# s = Simulation([b1, b2])
-
-# ntraders = 5
-# traders_v1 = []
-# bets_v1 = []
-# costs_v1 = []
-# traders_v2 = []
-# bets_v2 = []
-# costs_v2 = []
-
-# STDEV = 0
-# for i in range(ntraders):
-#     # draw this trader's belief
-#     trad_p0 = min(max(np.random.normal(loc=p0, scale=STDEV), 0), 1)
-
-#     traderv1 = Trader(i, 2, 10000000)
-#     traderv1.set_belief([trad_p0, 1-trad_p0])
-#     traderv2 = Trader(i, 2, 10000000)
-#     traderv2.set_belief([trad_p0, 1-trad_p0])
-
-#     bet1, cost1 = traderv1.play(b1, verbose=False)
-#     bets_v1.append(bet1)
-#     costs_v1.append(cost1)
-#     print("LMSR market trader", i, " bet:", bet1, "cost:", cost1)
-#     print('------')
-#     bet2, cost2 = traderv2.play(b2, verbose=True)
-#     bets_v2.append(bet2)
-#     costs_v2.append(cost2)
-#     print("LS-LMSR market trader", i, " bet:", bet2, "cost:", cost2)
-#     print()
-
-# print('==========')
-# print('LMSR market: ')
-# b1.get_market_state()
-# print()
-# print('LS-LMSR market')
-# b2.get_market_state()
-
-
-
-
-# 1 ROUND OF SIMULATION 
-# trader1 = Trader(1, 2, 10000000)
-# trader1.set_belief([trader_p0, 1-trader_p0])
-# trad_p0 = min(max(np.random.normal(loc=p0, scale=0.2), 0), 1)
-
-# trader2 = Trader(2, 2, 10000000)
-# trader2.set_belief([trader_p0, 1-trader_p0])
-# print()
-# bet1, cost1 = trader1.play(b1, verbose=True)
-# print("LMSR market trader: bet", bet1, "; cost", cost1)
-# b1.get_market_state()
-# print()
-# print('------')
-# print()
-# bet2, cost2 = trader2.play(b2, verbose=True)
-# print("LS-LMSR market trader: bet", bet2, "; cost", cost2)
-# b2.get_market_state()
-
-
