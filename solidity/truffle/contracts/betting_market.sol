@@ -129,9 +129,8 @@ contract PredictionMarket {
     }
 
     function submitBet(uint i, int256 shares) public payable {
-        SD59x18 cost = cost_of_bet(i, shares);
         SD59x18 converted_shares = convert(shares);
-        int256 costDiff = intoInt256(cost);
+        int256 costDiff = bet_cost(i, shares);
 
         // Transfer funds from user's wallet to contract's wallet
         require(
@@ -152,10 +151,17 @@ contract PredictionMarket {
         //  require(outcomeTokens[i].transfer(msg.sender, shares), "Transfer failed");
     }
 
+    function bet_cost(uint256 i, int256 shares) public view returns (int256) {
+        SD59x18 bet = cost_of_bet(i, shares);
+        int256 converted_bet = intoInt256(bet);
+
+        return (converted_bet) / 10000;
+    }
+
     function cost_of_bet(
         uint256 i,
         int256 shares
-    ) public view returns (SD59x18) {
+    ) internal view returns (SD59x18) {
         SD59x18[] memory delta = new SD59x18[](outcomeCount);
         delta[i] = convert(shares);
 
@@ -168,13 +174,13 @@ contract PredictionMarket {
         SD59x18 oldCost = cost(oldQ);
         SD59x18 newCost = cost(newQ);
         SD59x18 costDiff = newCost - oldCost;
-        return (costDiff / sd(100000));
+        return costDiff;
     }
 
     function redeem_winnings() public payable {
         SD59x18[] memory payouts = traders[msg.sender].payouts;
         SD59x18 totalPayout = payouts[winning_index];
-        totalPayout = totalPayout / sd(100000);
+        totalPayout = totalPayout;
 
         int256 payout = intoInt256(totalPayout);
         require(intoInt256(totalPayout) > 0, "No winnings to redeem");

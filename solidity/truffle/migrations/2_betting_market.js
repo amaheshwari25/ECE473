@@ -8,5 +8,5 @@ var msr = "LSLMSR"
 
 
 module.exports = function(deployer) {
-  deployer.deploy(BettingMarket, outcome_count, alpha, beta, msr, );
+  deployer.deploy(BettingMarket, outcome_count, alpha, beta, msr);
 };
