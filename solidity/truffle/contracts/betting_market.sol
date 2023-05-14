@@ -168,13 +168,13 @@ contract PredictionMarket {
         SD59x18 oldCost = cost(oldQ);
         SD59x18 newCost = cost(newQ);
         SD59x18 costDiff = newCost - oldCost;
-        return (costDiff / sd(1000));
+        return (costDiff / sd(100000));
     }
 
     function redeem_winnings() public payable {
         SD59x18[] memory payouts = traders[msg.sender].payouts;
         SD59x18 totalPayout = payouts[winning_index];
-        totalPayout = totalPayout / sd(1000);
+        totalPayout = totalPayout / sd(100000);
 
         int256 payout = intoInt256(totalPayout);
         require(intoInt256(totalPayout) > 0, "No winnings to redeem");
