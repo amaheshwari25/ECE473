@@ -29,16 +29,17 @@ class Trader:
         init_cost = mkt.cost(mkt.q)
         init_payouts = self.payouts
 
-        
+        bet_cost = True
         if(mkt.get_price(0, mkt.q) < self.belief[0]):
-            while(MAX_ITER >= 0 and mkt.get_price(0, mkt.q) < self.belief[0]):
+            while(MAX_ITER >= 0 and mkt.get_price(0, mkt.q) < self.belief[0] and bet_cost is not None):
                 bet_cost = self.bet(mkt, 0, DELTA_FRAC*mkt.q[0])
                 MAX_ITER-=1
         elif(mkt.get_price(1, mkt.q) < self.belief[1]):   
-            while(MAX_ITER >= 0 and mkt.get_price(1, mkt.q) < self.belief[1]):
+            while(MAX_ITER >= 0 and mkt.get_price(1, mkt.q) < self.belief[1] and bet_cost is not None):
                 bet_cost = self.bet(mkt, 1, DELTA_FRAC*mkt.q[1])
                 MAX_ITER-=1
 
+        # ISSUE with the below implementation: LMSR just keeps alternating buying the two diff shares, not realistic / code design flaw
         # while(flag and MAX_ITER >= 0):
         #     flag = False
         #     # this is hard-coded for a 2-item market
@@ -52,14 +53,14 @@ class Trader:
         #         if bet_cost is not None: 
         #             flag=True # logic: set flag to True if this went through, otherwise leave whatever was from first item
         #     MAX_ITER-=1
-        
+
         if(MAX_ITER < 0):
             print("LOG: play() function hit MAX_ITER")
         
         final_cost = mkt.cost(mkt.q)
         if(verbose):
             print("Cost of transaction", final_cost-init_cost)
-            print("Expected return from transaction", sum(self.belief[i]*self.payouts[i] for i in range(self.n)))
+            print("Expected final return after transaction", sum(self.belief[i]*self.payouts[i] for i in range(self.n)))
             print("Current price vs beliefs", [mkt.get_price(0, mkt.q), mkt.get_price(1, mkt.q)], self.belief)
 
         bet = [x[0]-x[1] for x in zip(self.payouts, init_payouts)]
