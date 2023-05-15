@@ -8,7 +8,7 @@ contract PredictionMarket {
     uint256 outcomeCount;
     SD59x18[] quantities;
     SD59x18 alpha;
-    SD59x18 beta;
+    SD59x18 b;
     string msr;
     uint256 winning_index;
 
@@ -21,12 +21,12 @@ contract PredictionMarket {
     constructor(
         uint256 _outcomeCount,
         int256 _alpha,
-        int256 _beta,
+        int256 _b,
         string memory _msr
     ) {
         outcomeCount = _outcomeCount;
-        alpha = sd(0.03e18);
-        beta = sd(150.27e18);
+        alpha = intoSD59x18(_alpha);
+        b = intoSD59x18(_b);
         //  oracle = _oracle;
         msr = _msr;
         winning_index = 0;
@@ -36,8 +36,12 @@ contract PredictionMarket {
         }
     }
 
-    function get_beta() public view returns (int256) {
-        return intoInt256(beta);
+    function get_b() public view returns (int256) {
+        return intoInt256(b);
+    }
+
+    function get_alpha() public view returns (int256) {
+        return intoInt256(alpha);
     }
 
     function fund() public payable {}
@@ -78,7 +82,7 @@ contract PredictionMarket {
             keccak256(abi.encodePacked(msr)) ==
             keccak256(abi.encodePacked("LMSR"))
         ) {
-            return intoInt256(((quantities[i] / beta).exp()) / sum(quantities));
+            return intoInt256(((quantities[i] / b).exp()) / sum(quantities));
         } else {
             // "LS-LMSR"
             SD59x18 b = alpha * sum(quantities);
@@ -120,11 +124,11 @@ contract PredictionMarket {
             keccak256(abi.encodePacked(msr)) ==
             keccak256(abi.encodePacked("LMSR"))
         ) {
-            return cost_LMSR(beta, q);
+            return cost_LMSR(b, q);
         } else {
             // "LS-LMSR"
-            SD59x18 b = alpha * sum(q);
-            return cost_LMSR(b, q);
+            SD59x18 temp_b = alpha * sum(q);
+            return cost_LMSR(temp_b, q);
         }
     }
 
@@ -180,11 +184,11 @@ contract PredictionMarket {
     function redeem_winnings() public payable {
         SD59x18[] memory payouts = traders[msg.sender].payouts;
         SD59x18 totalPayout = payouts[winning_index];
-        totalPayout = totalPayout;
-
+        quantities[winning_index] -= totalPayout;
         int256 payout = intoInt256(totalPayout);
         require(intoInt256(totalPayout) > 0, "No winnings to redeem");
         traders[msg.sender].payouts = new SD59x18[](outcomeCount);
+
         payable(msg.sender).transfer(uint(payout));
     }
 }
