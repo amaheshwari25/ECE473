@@ -20,13 +20,13 @@ contract PredictionMarket {
 
     constructor(
         uint256 _outcomeCount,
-        int256 _alpha,
-        int256 _b,
+        SD59x18 _alpha,
+        SD59x18 _b,
         string memory _msr
     ) {
         outcomeCount = _outcomeCount;
-        alpha = intoSD59x18(_alpha);
-        b = intoSD59x18(_b);
+        alpha = _alpha;
+        b = _b;
         //  oracle = _oracle;
         msr = _msr;
         winning_index = 0;
@@ -184,7 +184,7 @@ contract PredictionMarket {
     function redeem_winnings() public payable {
         SD59x18[] memory payouts = traders[msg.sender].payouts;
         SD59x18 totalPayout = payouts[winning_index];
-        quantities[winning_index] -= totalPayout;
+        quantities[winning_index] = quantities[winning_index] - totalPayout;
         int256 payout = intoInt256(totalPayout);
         require(intoInt256(totalPayout) > 0, "No winnings to redeem");
         traders[msg.sender].payouts = new SD59x18[](outcomeCount);
