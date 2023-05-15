@@ -17,7 +17,7 @@ import random
 # for i in range(3):
 #     for x in x_vals:
 #         bm[i].submit_bet(traders[i], [x-bm[i].q[0], 0])
-#         prices[i].append(bm[i].get_price(0, bm.q))
+#         prices[i].append(bm[i].get_price(0, bm[i].q))
 
 # plt.plot(x_vals, prices[0], label='q_y = 250')
 # plt.plot(x_vals, prices[1], label='q_y = 500')
@@ -64,23 +64,23 @@ import random
 
 
 # FIGURE: variance with alpha 
-alphas = [0.01, 0.05, 0.1, 0.2, 0.5]
-x_vals = np.arange(1, 1000)
+# alphas = [0.01, 0.05, 0.1, 0.2, 0.5]
+# x_vals = np.arange(1, 1000)
 
-for alph in alphas:
-    bm = BettingMarket(2, [1, 1], "LSLMSR", alpha=alph, beta=None, true_dist=[0.8, 0.2])
-    inf_trader = BaseTrader(999, 2, 10000000000000)
-    costs = []
-    for x in x_vals:
-        costs.append(bm.submit_bet(inf_trader, [1, 0]))
-        bm.submit_bet(inf_trader, [0, 1])
-    plt.plot(x_vals, costs, label=(r'$\alpha=$'+str(alph)))
+# for alph in alphas:
+#     bm = BettingMarket(2, [1, 1], "LSLMSR", alpha=alph, beta=None, true_dist=[0.8, 0.2])
+#     inf_trader = BaseTrader(999, 2, 10000000000000)
+#     costs = []
+#     for x in x_vals:
+#         costs.append(bm.submit_bet(inf_trader, [1, 0]))
+#         bm.submit_bet(inf_trader, [0, 1])
+#     plt.plot(x_vals, costs, label=(r'$\alpha=$'+str(alph)))
 
-plt.xlim(1, 1000)
-plt.xlabel('Quantity outstanding (for both items)')
-plt.ylabel('Cost of unit bet (of 1st item)')
-plt.xscale('log')
-plt.title(r'Cost of unit bet vs quantity outstanding, $q_1 = q_2$')
-plt.legend()
-plt.savefig('alpha_fig.png')
-plt.close()
+# plt.xlim(1, 1000)
+# plt.xlabel('Quantity outstanding (for both items)')
+# plt.ylabel('Cost of unit bet (of 1st item)')
+# plt.xscale('log')
+# plt.title(r'Cost of unit bet vs quantity outstanding, $q_1 = q_2$')
+# plt.legend()
+# plt.savefig('alpha_fig.png')
+# plt.close()
