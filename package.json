@@ -1,0 +1,7 @@
+{
+  "name": "",
+  "dependencies": {
+    "@prb/math/=lib/prb-math/src/": ""
+  }
+ 
+}

@@ -1,0 +1,552 @@
+{
+	"compiler": {
+		"version": "0.8.19+commit.7dd6d404"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_outcomeCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "SD59x18",
+						"name": "_alpha",
+						"type": "int256"
+					},
+					{
+						"internalType": "SD59x18",
+						"name": "_beta",
+						"type": "int256"
+					},
+					{
+						"internalType": "string",
+						"name": "_msr",
+						"type": "string"
+					},
+					{
+						"internalType": "contract Token",
+						"name": "_token",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "x",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "y",
+						"type": "uint256"
+					}
+				],
+				"name": "PRBMath_MulDiv18_Overflow",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "x",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "y",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "denominator",
+						"type": "uint256"
+					}
+				],
+				"name": "PRBMath_MulDiv_Overflow",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "PRBMath_SD59x18_Div_InputTooSmall",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "SD59x18",
+						"name": "x",
+						"type": "int256"
+					},
+					{
+						"internalType": "SD59x18",
+						"name": "y",
+						"type": "int256"
+					}
+				],
+				"name": "PRBMath_SD59x18_Div_Overflow",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "SD59x18",
+						"name": "x",
+						"type": "int256"
+					}
+				],
+				"name": "PRBMath_SD59x18_Exp2_InputTooBig",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "SD59x18",
+						"name": "x",
+						"type": "int256"
+					}
+				],
+				"name": "PRBMath_SD59x18_Exp_InputTooBig",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "SD59x18",
+						"name": "x",
+						"type": "int256"
+					}
+				],
+				"name": "PRBMath_SD59x18_Log_InputTooSmall",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "PRBMath_SD59x18_Mul_InputTooSmall",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "SD59x18",
+						"name": "x",
+						"type": "int256"
+					},
+					{
+						"internalType": "SD59x18",
+						"name": "y",
+						"type": "int256"
+					}
+				],
+				"name": "PRBMath_SD59x18_Mul_Overflow",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "trader",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "shares",
+						"type": "uint256"
+					}
+				],
+				"name": "Bet",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "SD59x18[]",
+						"name": "q",
+						"type": "int256[]"
+					}
+				],
+				"name": "cost",
+				"outputs": [
+					{
+						"internalType": "SD59x18",
+						"name": "",
+						"type": "int256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "i",
+						"type": "uint256"
+					},
+					{
+						"internalType": "SD59x18[]",
+						"name": "q",
+						"type": "int256[]"
+					}
+				],
+				"name": "get_price",
+				"outputs": [
+					{
+						"internalType": "int256",
+						"name": "",
+						"type": "int256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "get_price_vector",
+				"outputs": [
+					{
+						"internalType": "int256[]",
+						"name": "",
+						"type": "int256[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "oracle",
+				"outputs": [
+					{
+						"internalType": "contract Oracle",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "redeem_winnings",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "i",
+						"type": "uint256"
+					},
+					{
+						"internalType": "SD59x18",
+						"name": "shares",
+						"type": "int256"
+					}
+				],
+				"name": "submitBet",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"errors": {
+				"PRBMath_MulDiv18_Overflow(uint256,uint256)": [
+					{
+						"notice": "Thrown when the resultant value in {mulDiv18} overflows uint256."
+					}
+				],
+				"PRBMath_MulDiv_Overflow(uint256,uint256,uint256)": [
+					{
+						"notice": "Thrown when the resultant value in {mulDiv} overflows uint256."
+					}
+				],
+				"PRBMath_SD59x18_Div_InputTooSmall()": [
+					{
+						"notice": "Thrown when dividing two numbers and one of them is `MIN_SD59x18`."
+					}
+				],
+				"PRBMath_SD59x18_Div_Overflow(int256,int256)": [
+					{
+						"notice": "Thrown when dividing two numbers and one of the intermediary unsigned results overflows SD59x18."
+					}
+				],
+				"PRBMath_SD59x18_Exp2_InputTooBig(int256)": [
+					{
+						"notice": "Thrown when taking the binary exponent of a base greater than 192e18."
+					}
+				],
+				"PRBMath_SD59x18_Exp_InputTooBig(int256)": [
+					{
+						"notice": "Thrown when taking the natural exponent of a base greater than 133_084258667509499441."
+					}
+				],
+				"PRBMath_SD59x18_Log_InputTooSmall(int256)": [
+					{
+						"notice": "Thrown when taking the logarithm of a number less than or equal to zero."
+					}
+				],
+				"PRBMath_SD59x18_Mul_InputTooSmall()": [
+					{
+						"notice": "Thrown when multiplying two numbers and one of the inputs is `MIN_SD59x18`."
+					}
+				],
+				"PRBMath_SD59x18_Mul_Overflow(int256,int256)": [
+					{
+						"notice": "Thrown when multiplying two numbers and the intermediary absolute result overflows SD59x18."
+					}
+				]
+			},
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"smart_contracts/betting_market.sol": "PredictionMarket"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"smart_contracts/Common.sol": {
+			"keccak256": "0x22d9bf264eeb498bda55112723eaa4cdf1a2c037472dcde9a1f16257aabb4c7e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fac0b4f4bcfeea408d0194f7fa6220aac7d9801ccc039afed6fa2839093477a6",
+				"dweb:/ipfs/QmNaF3J7gNKAB2FHBgLeHN7W6uLTvhZq2VwgbNShLdomZc"
+			]
+		},
+		"smart_contracts/SD59x18.sol": {
+			"keccak256": "0x563ea3c57588abc830cb15a99927caf0849213da349818bf8e0d5daed0a33700",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ef41c8417527637b11b19873581613d48e9a54dc7e4b1f2c8500df60e44ca479",
+				"dweb:/ipfs/QmUGXrmBdkTcZ3Brucq8ZkDYd3kfgx2wsHV2RDVyVPFosd"
+			]
+		},
+		"smart_contracts/betting_market.sol": {
+			"keccak256": "0x8f76ad0a6784736c81b3a1d25216206df58df3e34cbb1d2754349dfb775c6ca7",
+			"urls": [
+				"bzz-raw://3c53e1a1b87cc491604af2cc958e35996220eb6a795ea1f523c079b7895794d2",
+				"dweb:/ipfs/Qmeu9sYftSXrmcknUyLQ6VZFBX9go5iUxoJP2MGMypnPho"
+			]
+		},
+		"smart_contracts/oracle.sol": {
+			"keccak256": "0x3cf00438a81be3c0afec9a6db82d3c1e92a84687521ca5772910e9cb42067c2b",
+			"urls": [
+				"bzz-raw://26c1f1fdd22dd49cd4e862093a1107a6064a741bcdeb063307c0213cf79f637a",
+				"dweb:/ipfs/QmPsLQ5XyfTgPwpcVUdENLmCqgxaRHQfBp7n1dWaYYh1Va"
+			]
+		},
+		"smart_contracts/sd1x18/Casting.sol": {
+			"keccak256": "0xfef68432603e9ff168fee762a9db8a821de11b90d4e88bcdc0530411423cdf2c",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d14f1c2752b83fc2c7a739ed3d6ed6a592fe6cf7567a7d81e2d6b127733be027",
+				"dweb:/ipfs/QmQ8Dmk8sH72CokrM2HbGUw4JntXyLMBkJ96iNvhyEjhMZ"
+			]
+		},
+		"smart_contracts/sd1x18/Constants.sol": {
+			"keccak256": "0xdd8aff1c9806ba8b424a7622b3056bed3b4451271c7537cbdda5b3329983bd5a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://214317682d38379e6cc1c10bd62336b483e1963f83e8819309d29784935e3f69",
+				"dweb:/ipfs/QmasNgbhNjSQ9Wvdo2uaCoDPxzMrGQPqj57x9GCDzB6N1R"
+			]
+		},
+		"smart_contracts/sd1x18/Errors.sol": {
+			"keccak256": "0x0480a30e70614de70cb337d09258f9a56b623cb99b151a14addc4f8e7f4fe441",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0c5f626077e1c97fd8925cee62486f4c27e9f1ecd95eb2e57d17a24e2e7c6525",
+				"dweb:/ipfs/QmbkW5LE8TVFDwGVKockqR7LsoEmjjMnm4Hzt5posLD7ur"
+			]
+		},
+		"smart_contracts/sd1x18/ValueType.sol": {
+			"keccak256": "0x354b7a8c7d47a709b710bb31c9ded9dc6ce5dae3ca8316e1875995ef67553564",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c149f3320001dbb44feacc09656bb7eb3321aadd64c78ad8ebfca1a20c4efa7a",
+				"dweb:/ipfs/QmY75ynGAbqPh1ZN4kycrJ5frJ7huAWsSfYrYQ3dEMyhLS"
+			]
+		},
+		"smart_contracts/sd59x18/Casting.sol": {
+			"keccak256": "0xa82cce8ca5d804d03e5c7997ac3a5a0b2915cfb9aadaf7bfcd7a098a9c71c1de",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://28053e5eb321463bd06a5725fc8fa20bba61d61f24bb7687a66833de954ed2e0",
+				"dweb:/ipfs/QmPedwwhXya1Jm4TK9STweKnSviVynDpsSPfCyASUfagxN"
+			]
+		},
+		"smart_contracts/sd59x18/Constants.sol": {
+			"keccak256": "0xe72c92a9f264468dba29c0282b68d426810259bbaab9ad29336591909ca2be6b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://45b4648894e6019f3ba41fa45e8d41cff7ac3c7386c31e4828e9a1784b4372be",
+				"dweb:/ipfs/QmXMJRWAZYhamEFfL8BpKc2ZcQsxDLJ5ebZ4AJpgTnTdVD"
+			]
+		},
+		"smart_contracts/sd59x18/Conversions.sol": {
+			"keccak256": "0x030d58dcd8a7b90e287ef82fc23d9a0e1d348b9d21a488adbfa9e550b734f949",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1ed6165347de1d0b597c1a7515e6946b9e37a11078b85cd6a4779e70b69ede6e",
+				"dweb:/ipfs/QmXQiX4GTKFon7UGmLFZooG9CWhvm1ZvtxZUQp3Kce26Y8"
+			]
+		},
+		"smart_contracts/sd59x18/Errors.sol": {
+			"keccak256": "0xb93ff585463651e4561c9f420041cd17bf1b0393ac02e9c232d2cdfbc96d48f9",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://4632ee4ae4b655c73e63b0433a1a9fab04b29432ea94a174e819c3755de9704d",
+				"dweb:/ipfs/QmXnsT9pZDjFHduz4A1HpMfZE8MxBCtyeKJ4KhMczDURRY"
+			]
+		},
+		"smart_contracts/sd59x18/Helpers.sol": {
+			"keccak256": "0xe77252dcbf88c3e5daafc7b92f5429696202b58e51a87d8eca8d38ad07b120c3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://225db8c6e1b06ebd3287e9c88bcd57d51251203b7bd8750d56a6e408bad7a13a",
+				"dweb:/ipfs/QmQy6gLedXeo8SR5oojoEi7oJGh32XEs8pAu68LZP99p7f"
+			]
+		},
+		"smart_contracts/sd59x18/Math.sol": {
+			"keccak256": "0x142c76d04832ee9d1a0dd576391f4300dfd1b91375a80139123d390b05e86faf",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ee5fa1f32ed3239e44214dbc23bcb5dc326cb938a8a12d1618686ad5dcb55ce9",
+				"dweb:/ipfs/QmYhS4MEADCp5zZNsRWbDXnQahtQsdTFA3Hb8tFzthKrAL"
+			]
+		},
+		"smart_contracts/sd59x18/ValueType.sol": {
+			"keccak256": "0x8c68fc62551c05a842143413da96eb6f5e7ff92b8f59dbd99a3f210e6d6392cd",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://3af885fc2375ebc4b5f90df22e289b3a55d7c0bf067ed4ee7bf31f57904e40aa",
+				"dweb:/ipfs/Qmc7S7EgWcxa1Rh3g7LtTQGcuxRDgg4ZLvefiqHz25Jmt7"
+			]
+		},
+		"smart_contracts/token.sol": {
+			"keccak256": "0xd4a9d50b16f8934e14f034e7749bbe9f103cc5b0b4117ba0da7b2a26a25b36ec",
+			"urls": [
+				"bzz-raw://8eaa6e3300cf7c1af1acc260796869f688df8af8a518baa59460561351ec44bc",
+				"dweb:/ipfs/QmPr4i2AyaPXHFFSe9Sv7LpbFoyKt78BuDNKYeK5uCpZij"
+			]
+		},
+		"smart_contracts/ud2x18/Casting.sol": {
+			"keccak256": "0x3929d0678d278796233a728f944c94c02c1b861bb9b0bebc99c82fff63b0b792",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fbe8aa3ad2fd60f5151fbe9a3396b0d5b208e611c36ba059a3d99c5e401e472b",
+				"dweb:/ipfs/QmeabF5FbfHXw8x5dvTpqKnTHTzedqK8RzSGMRdSRMEbZh"
+			]
+		},
+		"smart_contracts/ud2x18/Constants.sol": {
+			"keccak256": "0x21ddfcd56df525de6221f501d9a9675b4dd7acd9e65629f7ee5c49eb14fdba21",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://94bd28e62f4860146c9a9b0e7416386f623693f4596371688ab41e8a3c2c6a81",
+				"dweb:/ipfs/Qmf1QmpbDU7SHLQQvXucJ132EstGCpVfSbJBcNt38pb5aa"
+			]
+		},
+		"smart_contracts/ud2x18/Errors.sol": {
+			"keccak256": "0x7cce90030642adc7b050b57a69a88104aff4c8668596e7d905c07b829f47269e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://51413cbea4e69531ca0762298bfd67744b3404eb4e77b78ce5d203922b169ae7",
+				"dweb:/ipfs/QmZwQKtwgx7bTppNSianbTbzGGHRLwcEvh8oLtWV2LvSyL"
+			]
+		},
+		"smart_contracts/ud2x18/ValueType.sol": {
+			"keccak256": "0x9179d2c48d5cea4b1e6dae40b690e6efc27588b020e90b14160e43d8061a2e6b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://69ba63f1e067504b708fe67cf05548753d14c58792f85fbad65e4253467f3b3e",
+				"dweb:/ipfs/QmQXkWLwu9mBJDUkj4se9Wc37fyddPhc9LEitNRp9LhtSW"
+			]
+		},
+		"smart_contracts/ud60x18/Casting.sol": {
+			"keccak256": "0x68f5d76ed37fbdd331ad6b583fae9237f37466d8e738b23425cdb515ac82ced9",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5ff4bd0f2452029c14ec44f0b784d07e549df2985a2f06c17296aac7245a48b0",
+				"dweb:/ipfs/QmUrBLQenfrVxHgeUwYE7PDkrahRKCPzXC7QP6nuX18bVG"
+			]
+		},
+		"smart_contracts/ud60x18/Constants.sol": {
+			"keccak256": "0x444a001532c12455ea8fa5234c8a2a12f4d979317ae2c7a32a63fef1a1e565a2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b9d44856c93ec6f418b2155b5dd7ce3ed71d2b3452c42a4c6673acfec70256a5",
+				"dweb:/ipfs/QmfR4PyedWtFvdb9C2rqVbkm1xtnW9j1rB1NdrtBLr3rnZ"
+			]
+		},
+		"smart_contracts/ud60x18/Errors.sol": {
+			"keccak256": "0x3576ecdbd1b90283058bc176573e9f17b0020de8e2855694e4d9949357082061",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a677a3e110fe585cb3a3e5440b06727721520d0b6153fbfdad2f5b4c42e6ae9e",
+				"dweb:/ipfs/QmQNvyapiomnNSDhhFGFrc2R129KvWtvfmXXtz1q6cmM2x"
+			]
+		},
+		"smart_contracts/ud60x18/Helpers.sol": {
+			"keccak256": "0x55fc43c9839f2ba767309f087977027734e1e2189c367cac9a0bed914b17a12e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://4061d26a6b73fb4f35304834b2d21902575160a71ff35a22a4d6cf9cea76f878",
+				"dweb:/ipfs/Qmb91cS59E2aKanMwtzfGCxpzbmerTTxbKYekLJ3SipVUV"
+			]
+		},
+		"smart_contracts/ud60x18/Math.sol": {
+			"keccak256": "0x4216ffc8099bb2b18355b0c947a24ba1530d0145a58e1f751e4cdfd72d419564",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://42c8583f588e3aa1a057e1c956f10686b1f6eceeca651903ddf47f4d9e193c4b",
+				"dweb:/ipfs/QmW4v2HGEH6LBqUS71mFzgwB1ebC5JyiRRaxHSAB5yVyCY"
+			]
+		},
+		"smart_contracts/ud60x18/ValueType.sol": {
+			"keccak256": "0x1fb504737ccd77ceb1443cb9f756ab170b0074b26154b25bd473a01d9bc72b80",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://87ae2643eb78cb0d876041146a1e3e3fb3461dd0127f99d8162cd15e5fb948db",
+				"dweb:/ipfs/QmZ7Vf25B2jDTYL4RTq6Exw5PRuukV243euSZ1yGUiZpvQ"
+			]
+		}
+	},
+	"version": 1
+}

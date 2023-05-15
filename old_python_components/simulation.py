@@ -8,9 +8,17 @@ class Simulation:
 
     def __init__(self):
         self.betters = []
+        self.traders_LMSR = []
+        self.traders_LSLMSR = []
     
     # def add_better(self, trader: Trader):
     #     self.betters.append(trader)
+
+    def getLMSRtraders(self):
+        return self.traders_LMSR
+
+    def getLSLMSRtraders(self):
+        return self.traders_LSLMSR
 
     def draw_unif_ground_truth(self, low, high):
         p0 = low+(high-low)*random.random()
